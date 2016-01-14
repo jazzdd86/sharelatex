@@ -27,6 +27,8 @@ RUN cd /var/www/sharelatex; \
 RUN cd /var/www/sharelatex/web; \
 	grunt compile:minify;
 
+RUN chown -R sharelatex:sharelatex /var/www/sharelatex
+
 # Install Nginx as a reverse proxy
 RUN apt-get install -y nginx;
 RUN rm /etc/nginx/sites-enabled/default
@@ -63,15 +65,14 @@ ADD runit/web-sharelatex.sh              /etc/service/web-sharelatex/run
 RUN apt-get install -y wget
 RUN wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz; \
 	mkdir /install-tl-unx; \
-	tar -xvf install-tl-unx.tar.gz -C /install-tl-unx --strip-components=1
-
-RUN echo "selected_scheme scheme-basic" >> /install-tl-unx/texlive.profile; \
-	/install-tl-unx/install-tl -profile /install-tl-unx/texlive.profile
-RUN rm -r /install-tl-unx; \
+	tar -xvf install-tl-unx.tar.gz -C /install-tl-unx --strip-components=1; \
 	rm install-tl-unx.tar.gz
 
-ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/texlive/2015/bin/x86_64-linux/
-RUN apt-get install -y texlive-full
+RUN mkdir -p /usr/local/texlive && \
+	mkdir -p /opt && \
+	grep -n texbin /etc/environment || sudo sed -i.bak -e /PATH/s/\\\"$/:\\\/opt\\\/texbin\"/ /etc/environment
+
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/texbin
 
 # Install Aspell
 RUN apt-get install -y aspell aspell-en aspell-af aspell-am aspell-ar aspell-ar-large aspell-bg aspell-bn aspell-br aspell-ca aspell-cs aspell-cy aspell-da aspell-de aspell-de-alt aspell-el aspell-eo aspell-es aspell-et aspell-eu-es aspell-fa aspell-fo aspell-fr aspell-ga aspell-gl-minimos aspell-gu aspell-he aspell-hi aspell-hr aspell-hsb aspell-hu aspell-hy aspell-id aspell-is aspell-it aspell-kk aspell-kn aspell-ku aspell-lt aspell-lv aspell-ml aspell-mr aspell-nl aspell-no aspell-nr aspell-ns aspell-or aspell-pa aspell-pl aspell-pt-br aspell-ro aspell-ru aspell-sk aspell-sl aspell-ss aspell-st aspell-sv aspell-ta aspell-te aspell-tl aspell-tn aspell-ts aspell-uk aspell-uz aspell-xh aspell-zu 
