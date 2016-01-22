@@ -15,7 +15,7 @@ The recommended way to install and run ShareLaTeX Community Edition is via [Dock
     -e SHARELATEX_REDIS_HOST=redis \
     -e VIRTUAL_HOST=latex.jotunheim.de,www.latex.jotunheim.de \
     -e SHARELATEX_SITE_URL=http://latex.jotunheim.de \
-    -d jazz/sharelatex \
+    -d jazzdd/sharelatex
 ```
 
 * `--link latex_redis:redis --link latex_mongo:mongo` links the database containers directly to the sharelatex container
