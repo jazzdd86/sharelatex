@@ -1,5 +1,8 @@
 FROM phusion/baseimage:0.9.16
 
+# path environment variable updated with texlive binary path
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/texlive/2015/bin/x86_64-linux/
+
 # Install Sharelatex
 COPY install.sh /install.sh
 RUN /install.sh
